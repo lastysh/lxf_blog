@@ -15,6 +15,24 @@ def init(loop):
 	logging.info('server started at http://127.0.0.1:9000...')
 	return srv
 
+# loop = asyncio.get_event_loop()
+# loop.run_until_complete(init(loop))
+# loop.run_forever()
+
+import orm
+from models import User, Blog, Comment
+
+def test(loop):
+	yield from orm.create_pool(loop, user='www-data', password='www-data', db='awesome')
+	# u = User(name='Test', email='test@example.com', passwd='1234567890', image='about:blank')
+	# yield from u.save()
+	u = User('users', 'name', 'Test')
+	yield from u.remove()
+
+# for x in test():
+# 	pass
+
+
 loop = asyncio.get_event_loop()
-loop.run_until_complete(init(loop))
-loop.run_forever()
+loop.run_until_complete(test(loop))
+loop.close()
