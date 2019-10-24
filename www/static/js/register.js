@@ -2,10 +2,10 @@ function validateEmail(email){
 	var re=/^[a-z0-9\.\-\_]+\@[a-z0-9\-\_]+(\.[a-z0-9\-\_]+){1,4}$/;
 	return re.test(email.toLowerCase());
 }
-$('#vmf').show();
+
 $(function () {
-	var vmf = new Vue({
-		el: '#vmf',
+	var vmc = new Vue({
+		el: '#vmc',
 		data: {
 			name:'',
 			email:'',
@@ -15,7 +15,7 @@ $(function () {
 		methods:{
 			submit: function (event){
 				event.preventDefault();
-				var $form = $('#vmf');
+				var $form = $('#vmc');
 				if(! this.name.trim()){
 					return $form.showFormError('请输入名字');
 				}
@@ -42,5 +42,5 @@ $(function () {
 			}
 		}
 	});
-$('#vmf').show();
+$('#vmc').show();
 });
