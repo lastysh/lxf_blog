@@ -5,6 +5,8 @@ import orm
 from aiohttp import web
 from jinja2 import Environment, FileSystemLoader
 from coroweb import add_routes, add_static
+import aiohttp_autoreload
+
 
 def init_jinja2(app, **kw):
 	logging.info('init jinja2...')
@@ -109,7 +111,7 @@ def datetime_filter(t):
 		return u'%s小时前' % (delta // 3600)
 	if delta < 604800:
 		return u'%s天前' % (delta // 86400)
-	dt = datetime.fromtiemstamp(t)
+	dt = datetime.fromtimestamp(t)
 	return u'%s年%s月%s日' % (dt.year, dt.month, dt.day)
 
 
@@ -130,5 +132,8 @@ def init(loop):
 	# return srv
 
 loop = asyncio.get_event_loop()
+# ========================= set autoreload by liuchaoming 2019/10/24 =========================
+aiohttp_autoreload.start()
+# ========================= end block ========================================================
 loop.run_until_complete(init(loop))
 loop.run_forever()
