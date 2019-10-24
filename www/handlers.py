@@ -81,7 +81,7 @@ def register():
 import logging
 @post('/register_complete')
 def r_complete(request):
-	logging.info(dir(request))
+	logging.info(request.match_info['name'], "<<<<<<<>>>>>>>")
 	return request
 
 #=============================== test end===============================================================
