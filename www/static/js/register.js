@@ -4,8 +4,8 @@ function validateEmail(email){
 }
 
 $(function () {
-	var vmc = new Vue({
-		el: '#vmc',
+	var vm = new Vue({
+		el: '#vm',
 		data: {
 			name:'',
 			email:'',
@@ -15,7 +15,7 @@ $(function () {
 		methods:{
 			submit: function (event){
 				event.preventDefault();
-				var $form = $('#vmc');
+				var $form = $('#vm');
 				if(! this.name.trim()){
 					return $form.showFormError('请输入名字');
 				}
@@ -42,5 +42,5 @@ $(function () {
 			}
 		}
 	});
-$('#vmc').show();
+$('#vm').show();
 });
