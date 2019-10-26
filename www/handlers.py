@@ -3,6 +3,7 @@ from coroweb import get, post
 from models import User, Blog, Comment
 import time, re, asyncio
 from config import configs
+from apis import APIError, APIValueError, APIResourceNotFoundError, APIPermissionError
 
 
 COOKIE_NAME = 'awesession'
@@ -81,9 +82,8 @@ def register():
 import logging
 @post('/register_complete')
 def r_complete(request):
-	logging.info(request.match_info['name'], "<<<<<<<>>>>>>>")
+	logging.info("<<<<<<<>>>>>>>")
 	return request
-
 #=============================== test end===============================================================
 
 
@@ -149,7 +149,7 @@ def api_get_user(*, page='1'):
 
 
 @post('/api/users')
-def api_register_user(*, email, nae, passwd):
+def api_register_user(*, email, name, passwd):
 	if not name or not name.strip():
 		raise APIValueError('name')
 	if not email or not _RE_EMAIL.match(email):
