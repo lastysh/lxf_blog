@@ -86,6 +86,7 @@ def response_factory(app, handler):
 # ============================= log point by liuchaoming 2019/10/23 =================================
 				logging.info("use template, rendering ...")
 # ============================= end point ===========================================================
+				r['__user__'] = request.__user__
 				resp = web.Response(body=app['__templating__'].get_template(template).render(**r).encode('utf-8'))
 				resp.content_type = 'text/html;charset=utf-8'
 				return resp
@@ -113,36 +114,11 @@ def auth_factory(app, handler):
 			user = yield from cookie2user(cookie_str)
 			if user:
 				logging.info('set current user: %s' % user.email)
+				request.__user__ = user
+		if request.path.startswith('/manage/') and (request.__user__ is None or not request.__user__.admin):
+			return web.HTTPFound('/signin')
 		return (yield from handler(request))
 	return auth
-
-
-@asyncio.coroutine
-def cookie2user(cookie_str):
-	'''
-	Parse cookie and load user if cookie is valid.
-	'''
-	if not cookie_str:
-		return None
-	try:
-		L = cookie_str.split('-')
-		if len(L) != 3:
-			return None
-		uid, expires, sha1 = L
-		if int(expires) < time.time():
-			return None
-		user = yield from User.find(uid)
-		if user is None:
-			return None
-		s = '%s-%s-%s-%s' % (uid, user.passwd, expires, _COOKIE_KEY)
-		if sha1 != hashlib.sha1(s.encode('utf-8')).hexdigest():
-			logging.info('invlid sha1')
-			return None
-		user.passwd = '******'
-		return user
-	except Exception as e:
-		logging.exception(e)
-		return None
 
 
 def datetime_filter(t):

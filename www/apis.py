@@ -11,6 +11,10 @@ class APIError(Exception):
 	"""
 	def __init__(self, error, data='',  message=''):
 		super(APIError, self).__init__(message)
+# ======================= check point by liuchaoming 2019/10/27 ==================================
+		self.error = error + data + message
+		logging.info(error)
+# ======================= end check point ========================================================
 		self.error = error
 		self.data = data
 		self.message = message
