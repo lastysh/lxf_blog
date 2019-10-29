@@ -1,7 +1,7 @@
 """ handlers.py """
 from coroweb import get, post
 from models import User, Blog, Comment, next_id
-import time, re, asyncio
+import time, re, asyncio, logging
 from config import configs
 from apis import APIError, APIValueError, APIResourceNotFoundError, APIPermissionError
 import hashlib, json
@@ -82,10 +82,9 @@ def register():
 
 
 #=============================== test url request function by liuchaoming 2019/10/24====================
-import logging
 @post('/register_complete')
 def r_complete(request):
-	logging.info("<<<<<<<>>>>>>>")
+	# logging.info("<<<<<<<>>>>>>>")
 	return request
 #=============================== test end===============================================================
 
@@ -111,6 +110,11 @@ def authenticate(*, email, passwd):
 	sha1.update(user.id.encode('utf-8'))
 	sha1.update(b':')
 	sha1.update(passwd.encode('utf-8'))
+## ===================================== check point ==================================
+	# logging.info(user.id+'<<<< login >>>>'+user.passwd)
+	# logging.info("current " + passwd)
+	# logging.info(sha1.hexdigest())
+## ===================================== end check ====================================
 	if user.passwd != sha1.hexdigest():
 		raise APIValueError('passwd', 'Invalid password.')
 	r = web.Response()
@@ -164,6 +168,10 @@ def api_register_user(*, email, name, passwd):
 		raise APIError('register:failed', 'email', 'Email is already in use.')
 	uid = next_id()
 	sha1_passwd = "%s:%s" % (uid, passwd)
+## =============================  check piont ====================================================
+	# logging.info("save"+"<<<register>>>"+sha1_passwd)
+	# logging.info(hashlib.sha1(sha1_passwd.encode('utf-8')).hexdigest())
+## =============================  end check ======================================================
 	user = User(id=uid, name=name.strip(), email=email, passwd=hashlib.sha1(sha1_passwd.encode('utf-8')).hexdigest(),
 		image='http://www.gravatar.com/avatar/%s?d=mm&s=120' % hashlib.md5(email.encode('utf-8')).hexdigest())
 	yield from user.save()

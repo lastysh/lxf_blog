@@ -84,7 +84,7 @@ def response_factory(app, handler):
 				return resp
 			else:
 # ============================= log point by liuchaoming 2019/10/23 =================================
-				logging.info("use template, rendering ...")
+				# logging.info("use template, rendering ...")
 # ============================= end point ===========================================================
 				r['__user__'] = request.__user__
 				resp = web.Response(body=app['__templating__'].get_template(template).render(**r).encode('utf-8'))

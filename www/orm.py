@@ -46,10 +46,10 @@ def execute(sql, args):
 		try:
 			cur = yield from conn.cursor()
 # -------------------- sql statement debug add by liuchaoming 2019/10/23 --------------------------------
-			print("-------------- output mark 'b' ---------------------------------")
-			print(sql.replace('?', '%s'))
-			print(args)
-			print("-------------- output mark 'e' ---------------------------------")
+			# print("-------------- output mark 'b' ---------------------------------")
+			# print(sql.replace('?', '%s'))
+			# print(args)
+			# print("-------------- output mark 'e' ---------------------------------")
 # ------------------------- debug end -------------------------------------------------------------------
 			yield from cur.execute(sql.replace('?', '%s'), args)
 			affected = cur.rowcount
