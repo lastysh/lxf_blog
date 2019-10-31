@@ -14,6 +14,22 @@ _RE_EMAIL = re.compile(r'^[a-z0-9\.\-\_]+\@[a-z0-9\-\_]+(\.[a-z0-9\-\_]+){1,4}$'
 _RE_SHA1 = re.compile(r'^[0-9a-f]{40}$')
 
 
+def check_admin(request):
+	if request.__user__ is None or not request.__user__.admin:
+		raise APIPermissionError()
+
+
+def get_page_index(page_str):
+	p = 1
+	try:
+		p = int(page_str)
+	except ValueError as e:
+		pass
+	if p < 1:
+		p = 1
+	return p
+
+
 def user2cookie(user, max_age):
 	"""
 	Generate cookie str by user.
@@ -22,6 +38,11 @@ def user2cookie(user, max_age):
 	s = '%s-%s-%s-%s' % (user.id, user.passwd, expires, _COOKIE_KEY)
 	L = [user.id, expires, hashlib.sha1(s.encode('utf-8')).hexdigest()]
 	return '-'.join(L)
+
+
+def text2html(text):
+	lines = map(lambda s: '<p>%s</p>' % s.replace('&', '&amp;').replace('<', '&lt;').replace('>', '&gt;'), filter(lambda s: s.strip() != '', text.split('\n')))
+	return ''.join(lines)
 
 
 @asyncio.coroutine
@@ -134,6 +155,15 @@ def signout(request):
 	return r
 
 
+@get('/manage/blogs/create')
+def manage_create_blog():
+	return {
+	'__template__': 'manage_blog_edit.html',
+	'id': '',
+	'action': '/api/blogs'
+	}
+
+
 # @get('/api/users')
 # def api_get_user(*, page='1'):
 # 	page_index = get_page_index(page)
@@ -183,8 +213,14 @@ def api_register_user(*, email, name, passwd):
 	return r
 
 
+@get('/api/blogs/{id}')
+def api_get_blog(*, id):
+	blog = yield from Blog.find(id)
+	return blog
+
+
 @post('/api/blogs')
-def api_create_blog(request, *, naem, summary, content):
+def api_create_blog(request, *, name, summary, content):
 	check_admin(request)
 	if not name or not name.strip():
 		raise APIValueError('name', 'name cannot be empty.')
