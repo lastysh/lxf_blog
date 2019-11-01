@@ -216,7 +216,13 @@ def api_register_user(*, email, name, passwd):
 @get('/api/blogs/{id}')
 def api_get_blog(*, id):
 	blog = yield from Blog.find(id)
-	return blog
+## =============================  check piont ====================================================
+	# logging.info(blog)
+## =============================  end check ======================================================
+	# return blog  # directing blogs list
+	return web.HTTPFound('/manage/blogs')
+
+
 
 
 @post('/api/blogs')
@@ -231,6 +237,9 @@ def api_create_blog(request, *, name, summary, content):
 	blog = Blog(user_id=request.__user__.id, user_name=request.__user__.name, user_image=request.__user__.image, name=name.strip(),
 		summary=summary.strip(), content=content.strip())
 	yield from blog.save()
+# ============================== check area ==============================
+	# logging.info("api content: " + blog) >> TypeError: can only concatenate str (not "Blog") to str
+# ============================== check area ==============================
 	return blog
 
 
@@ -249,5 +258,5 @@ def api_blogs(*, page='1'):
 def manage_blogs(*, page='1'):
 	return {
 	'__template__': 'manage_blogs.html',
-	'page_index': get_age_index(page)
+	'page_index': get_page_index(page)
 	}
