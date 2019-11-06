@@ -1,3 +1,6 @@
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+
 import logging; logging.basicConfig(level=logging.INFO)
 import asyncio, os, json, time
 from datetime import datetime
@@ -5,7 +8,7 @@ import orm
 from aiohttp import web
 from jinja2 import Environment, FileSystemLoader
 from coroweb import add_routes, add_static
-import aiohttp_autoreload
+# import aiohttp_autoreload
 from handlers import cookie2user, COOKIE_NAME
 
 
@@ -153,7 +156,7 @@ def init(loop):
 
 loop = asyncio.get_event_loop()
 # ========================= set autoreload by liuchaoming 2019/10/24 =========================
-aiohttp_autoreload.start()
+# aiohttp_autoreload.start()
 # ========================= end block ========================================================
 loop.run_until_complete(init(loop))
 loop.run_forever()
